@@ -14,22 +14,25 @@ namespace PolyclinicService
 	{
 
 		[OperationContract]
-		List<Visit> getUserVisits();
+		List<Visit> GetVisits();
 
 		[OperationContract]
-		bool createVisit(Visit visit);
+		bool CreateVisit(Visit visit);
 
 		[OperationContract]
-		bool updateVisit(Visit visit);
+		bool UpdateVisit(Visit visit);
 
 		[OperationContract]
-		bool deleteVisit(Visit visit);
+		bool DeleteVisit(Visit visit);
 
 		[OperationContract]
-		List<Token> getUserTokens();
+		List<Token> getTokenPayments();
 
 		[OperationContract]
-		bool addTokenForUser(TokenPaymentDto tokenDto);
+		void PayToken(TokenPaymentDto tokenDto);
+
+		[OperationContract]
+		bool IsTokenExists(Functions functions);
 	}
 
 	[DataContract]
@@ -37,9 +40,6 @@ namespace PolyclinicService
 	{
 		[DataMember]
 		public int Id { get; set; }
-
-		[DataMember]
-		public string userEmail { get; set; }
 
 		[DataMember]
 		public string DoctorFio { get; set; }
@@ -53,6 +53,7 @@ namespace PolyclinicService
 		[DataMember]
 		public string Speciality { get; set; }
 
+		
 		public Visit(string doctorFio, string patientFio, DateTime date, string speciality)
 		{
 			DoctorFio = doctorFio;
@@ -70,9 +71,6 @@ namespace PolyclinicService
 			Speciality = speciality;
 		}
 
-		public Visit()
-		{
-		}
 	}
 
 	
@@ -84,33 +82,29 @@ namespace PolyclinicService
 		[DataMember]
 		public int Id { get; set; }
 
-		[DataMember]
-		public string userEmail { get; set; }
 
 		[DataMember]
-		public string data { get; set; }
+		public string Line { get; set; }
 
 		[DataMember]
-		public Functions function { get; set; }
+		public Functions Function { get; set; }
 
 		[DataMember]
-		public DateTime Date1 { get; set; }
+		public DateTime Day1 { get; set; }
 
 		[DataMember]
-		public DateTime Date2 { get; set; }
+		public DateTime Day2 { get; set; }
 
-		public Token(string userEmail, string data, Functions function, DateTime date1, DateTime date2)
+		public Token(int id, string data, Functions function, DateTime date1, DateTime date2)
 		{
-			this.userEmail = userEmail;
-			this.data = data;
-			this.function = function;
-			Date1 = date1;
-			Date2 = date2;
+			Id = id;
+			Line = data;
+			Function = function;
+			Day1 = date1;
+			Day2 = date2;
 		}
 
-		public Token()
-		{
-		}
+
 	}
 
 
@@ -118,13 +112,15 @@ namespace PolyclinicService
 	public class TokenPaymentDto
 	{
 		[DataMember]
-		public string data { get; set; }
+		public Functions data { get; set; }
 
 		[DataMember]
 		public DateTime Date1 { get; set; }
 
 		[DataMember]
 		public DateTime Date2 { get; set; }
+
+
 	}
 
 
@@ -133,7 +129,8 @@ namespace PolyclinicService
 		Create,
 		Update,
 		Delete,
-		Get
+		Get,
+		Undefined
 	}
 
 	public class UserNotFoundException : Exception

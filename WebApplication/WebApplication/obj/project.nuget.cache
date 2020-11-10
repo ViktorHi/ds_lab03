@@ -1,8 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "ICN1fmlx7sT5iKrDTK0+v1/xBZtZzOCFRQlCRWPc703peWRhrDnnvU1QM1sYCck5+sDpc06TJlt87uNk6MKGYA==",
+  "dgSpecHash": "1eu205Vbyeo/2EYE+Bc6DHoriBLQZpxETq8YWIWbxenIaq03t7EZ/0h7HUiHSdQZNzMYTOhjrmTNjFh32SqPog==",
   "success": true,
   "projectFilePath": "D:\\Studies\\3 course\\ds02\\lab03\\project\\WebApplication\\WebApplication\\WebApplication.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Viktor\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.net.http.winhttphandler\\4.4.0\\system.net.http.winhttphandler.4.4.0.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.private.servicemodel\\4.4.4\\system.private.servicemodel.4.4.4.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.reflection.dispatchproxy\\4.4.0\\system.reflection.dispatchproxy.4.4.0.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.security.principal.windows\\4.4.0\\system.security.principal.windows.4.4.0.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.servicemodel.duplex\\4.4.4\\system.servicemodel.duplex.4.4.4.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.servicemodel.http\\4.4.4\\system.servicemodel.http.4.4.4.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.servicemodel.nettcp\\4.4.4\\system.servicemodel.nettcp.4.4.4.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.servicemodel.primitives\\4.4.4\\system.servicemodel.primitives.4.4.4.nupkg.sha512",
+    "C:\\Users\\Viktor\\.nuget\\packages\\system.servicemodel.security\\4.4.4\\system.servicemodel.security.4.4.4.nupkg.sha512"
+  ],
   "logs": []
 }

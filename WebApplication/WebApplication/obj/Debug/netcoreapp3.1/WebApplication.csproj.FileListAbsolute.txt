@@ -12,8 +12,6 @@ D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\n
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.csprojAssemblyReference.cache
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.AssemblyInfoInputs.cache
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.AssemblyInfo.cs
-D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.csproj.CoreCompileInputs.cache
-D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.MvcApplicationPartsAssemblyInfo.cache
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.RazorAssemblyInfo.cache
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.RazorAssemblyInfo.cs
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.TagHelpers.input.cache
@@ -40,3 +38,16 @@ D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\n
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\Razor\Views\Home\Privacy.cshtml.g.cs
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\Razor\Views\Home\sign_up.cshtml.g.cs
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\Razor\Views\Home\visits.cshtml.g.cs
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Connected Services\ServiceReference1\ConnectedService.json
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.Net.Http.WinHttpHandler.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.Duplex.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.Http.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.NetTcp.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.Primitives.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.ServiceModel.Security.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Net.Http.WinHttpHandler.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netstandard2.0\System.Private.ServiceModel.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\win7\lib\netstandard2.0\System.Private.ServiceModel.dll
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.csproj.CoreCompileInputs.cache
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.MvcApplicationPartsAssemblyInfo.cache

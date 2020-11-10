@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApplication.Models;
+using ServiceReference1;
+using System.ServiceModel.Channels;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace WebApplication.Controllers
 {
@@ -15,8 +18,9 @@ namespace WebApplication.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private User user;
-        private ServiceEmpty service = new ServiceEmpty();
+        private PolyclinicServiceClient  service = new PolyclinicServiceClient();
         private int crutch = -42069;
+
 
 
         public HomeController(ILogger<HomeController> logger)
@@ -42,10 +46,10 @@ namespace WebApplication.Controllers
         public IActionResult Login(string login, string password)
         {
             var usr = new User(login, password);
-            if (!service.IsUser(usr))
-            {
-                return Login();
-            }
+            //if (!service.IsUser(usr))
+            //{
+            //    return Login();
+            //}
             user = usr;
 
             return Index();
@@ -56,11 +60,12 @@ namespace WebApplication.Controllers
         public IActionResult SignUp(string login, string password1, string password2)
         {
 
-            if (login!= null && password1 != null && password2 != null && login.Trim() != "" && password1.Trim() != "" && password2.Trim() != "" && password1.Trim() == password2.Trim())
-            {
-                service.AddUser(new Models.User(login.Trim(), password2.Trim()));
-                return Login();
-            }
+            //if (login!= null && password1 != null && password2 != null && login.Trim() != "" && password1.Trim() != "" && password2.Trim() != "" && password1.Trim() == password2.Trim())
+            //{
+                
+            //    service.AddUser(new Models.User(login.Trim(), password2.Trim()));
+            //    return Login();
+            //}
 
             return SignUP();
         }
@@ -86,13 +91,16 @@ namespace WebApplication.Controllers
                 return PayForToken();
 
             if (get)
-                service.AddToken(user, Functions.Get, day1, day2);
+                service.PayTokenAsync(new TokenPaymentDto(Functions.Get, day1, day2));
             if (edit)
-                service.AddToken(user, Functions.Update, day1, day2);
+                service.PayTokenAsync(new TokenPaymentDto(Functions.Update, day1, day2));
+
             if (create)
-                service.AddToken(user, Functions.Create, day1, day2);
+                service.PayTokenAsync(new TokenPaymentDto(Functions.Create, day1, day2));
+
             if (delete)
-                service.AddToken(user, Functions.Delete, day1, day2);
+                service.PayTokenAsync(new TokenPaymentDto(Functions.Delete, day1, day2));
+
 
             return Index();
         }
@@ -116,8 +124,9 @@ namespace WebApplication.Controllers
                 return Login();
             }
 
-            var d = service.GetTokens();
-            ViewBag.tokens = service.GetTokens();
+            Token[] t = service.getTokenPaymentsAsync().Result;
+
+            ViewBag.tokens = t;
             return View("bought_page");
         }
         #endregion
@@ -130,7 +139,7 @@ namespace WebApplication.Controllers
                 return Login();
             }
 
-            if (!service.IsTokenExists(Functions.Create, user))
+            if (!service.IsTokenExistsAsync(Functions.Create).Result)
             {
                 return PayForToken();
             }
@@ -146,12 +155,12 @@ namespace WebApplication.Controllers
                 return Login();
             }
 
-            if (!service.IsTokenExists(Functions.Update, user))
+            if (!service.IsTokenExistsAsync(Functions.Update).Result)
             {
                 return PayForToken();
             }
 
-            Visit vis = service.GetVisits().Where(p => p.Id.Equals(id)).FirstOrDefault();
+            Visit vis = service.GetVisitsAsync().Result.Where(p => p.Id.Equals(id)).FirstOrDefault();
             ViewBag.visit = vis;
 
             return View("create_or_update");
@@ -162,11 +171,11 @@ namespace WebApplication.Controllers
         {
             if (Id == crutch)
             {
-                service.CreateVisit(user, new Visit(0, doctor_fio, patient_fio, day_time, speciality));
+                service.CreateVisitAsync( new Visit(0, doctor_fio, patient_fio, day_time, speciality));
             }
             else
             {
-                service.UpdateVisit(new Visit(Id, doctor_fio, patient_fio, day_time, speciality));
+                service.UpdateVisitAsync(new Visit(Id, doctor_fio, patient_fio, day_time, speciality));
             }
 
 
@@ -182,13 +191,13 @@ namespace WebApplication.Controllers
                 return Login();
             }
 
-            if (!service.IsTokenExists(Functions.Get, user))
+            if (!service.IsTokenExistsAsync(Functions.Get).Result)
             {
                 return PayForToken();
             }
 
 
-            ViewBag.visits = service.GetVisits();
+            ViewBag.visits = service.GetVisitsAsync().Result;
 
             return View("visits");
         }
@@ -203,11 +212,11 @@ namespace WebApplication.Controllers
             {
                 return Login();
             }
-            if (!service.IsTokenExists(Functions.Delete, user))
+            if (!service.IsTokenExistsAsync(Functions.Delete).Result)
             {
                 return PayForToken();
             }
-            service.DeleteVisit(id);
+            service.DeleteVisitAsync(new Visit(id,"","",DateTime.Now, ""));
 
             return Visits();
         }
@@ -218,7 +227,7 @@ namespace WebApplication.Controllers
 
         private bool CheckUser()
         {
-            return (user != null || !service.IsUser(user));
+            return false;
         }
 
         public IActionResult Privacy()

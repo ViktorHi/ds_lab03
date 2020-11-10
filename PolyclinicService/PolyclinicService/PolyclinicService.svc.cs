@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -6,336 +7,380 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.CRUD;
+using Org.BouncyCastle.Crypto.Tls;
 
 namespace PolyclinicService
 {
-	// ПРИМЕЧАНИЕ. Команду "Переименовать" в меню "Рефакторинг" можно использовать для одновременного изменения имени класса "PolyclinicService" в коде, SVC-файле и файле конфигурации.
-	// ПРИМЕЧАНИЕ. Чтобы запустить клиент проверки WCF для тестирования службы, выберите элементы PolyclinicService.svc или PolyclinicService.svc.cs в обозревателе решений и начните отладку.
-	public class PolyclinicService : IPolyclinicService
-	{
-
-		private string getConnectionString()
-		{
-			return "server=104.154.108.3;user=root;database=ds;password=DS@BSU;";
-		}
-
-		private string getServiceName()
-		{
-			return "PolyclinincService";
-		}
-
-		private string getUserEmail()
-		{
-			return "User";
-		}
-
-		private string createTokenData()
-		{
-			StringBuilder sb = new StringBuilder();
-			Random random = new Random();
-			for(int i=0;i<256;i++)
-			{
-				sb.Append(random.Next());
-			}
-			return sb.ToString();
-		}
-
-		private Token getOrCreateToken()
-		{
-			string connStr = getConnectionString();
-			Token tokens;
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "SELECT * FROM tokens WHERE service = '" + getServiceName() + "'";
-				MySqlCommand command = new MySqlCommand(sql, conn);
-
-				using (DbDataReader reader = command.ExecuteReader())
-				{
-					if (reader.HasRows)
-					{
-
-						while (reader.Read())
-						{
-							int id = reader.GetInt32(0);
-							string data = reader.GetString(1);
-							string service = reader.GetString(2);
-							string userEmail = reader.GetString(5);
+    // ПРИМЕЧАНИЕ. Команду "Переименовать" в меню "Рефакторинг" можно использовать для одновременного изменения имени класса "PolyclinicService" в коде, SVC-файле и файле конфигурации.
+    // ПРИМЕЧАНИЕ. Чтобы запустить клиент проверки WCF для тестирования службы, выберите элементы PolyclinicService.svc или PolyclinicService.svc.cs в обозревателе решений и начните отладку.
 
 
-							Token token1 = new Token();
-							token1.Id = id;
-							token1.data = data;
-							token1.userEmail = userEmail;
-							return token1;
-						}
-					}
-				}
+    public class PolyclinicService : IPolyclinicService
+    {
 
-				Token token = new Token();
-				token.data = createTokenData();
-				token.userEmail = getUserEmail();
-				addToken(token);
-				return token;
-			}
-			catch (Exception ex)
-			{
-				return null;
-			}
-		}
+        ITokenManager tokenManager = new TokenManager("PolyclinincService", "DefaultPolyclynicUser");
 
+        public List<Visit> GetVisits()
+        {
 
-		public List<Visit> getUserVisits()
-		{
-			
-			string connStr = getConnectionString();
+            var token = tokenManager.FindOrAddToken();
+            if(tokenManager.IsTockenPaymentValid(token, Functions.Get))
+            {
+                var dao = VisitDao.instanceOf();
+                return dao.GetVisit();
+            }
 
-			getOrCreateToken();
+            throw new TokenNotFoundException("Payment or token not found. Operation GetVisits in Polyclinic Service");
+        }
 
-			List<Visit> visits = new List<Visit>();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "SELECT * FROM Visits WHERE user_email = '" + getUserEmail() + "'";
-				MySqlCommand command = new MySqlCommand(sql, conn);
+        public bool CreateVisit(Visit visit)
+        {
+            var token = tokenManager.FindOrAddToken();
+            if (tokenManager.IsTockenPaymentValid(token, Functions.Create))
+            {
+                var dao = VisitDao.instanceOf();
+                dao.CreateVisit(visit);
+                return true;
+            }
 
-				using (DbDataReader reader = command.ExecuteReader())
-				{
-					if (reader.HasRows)
-					{
+            throw new TokenNotFoundException("Payment or token not found. Operation CreateVisits in Polyclinic Service");
+        }
 
-						while (reader.Read())
-						{
-							int id = reader.GetInt32(0);
-							string patient = reader.GetString(1);
-							DateTime date = reader.GetDateTime(2);
-							string spec = reader.GetString(3);
-							string userEmail = reader.GetString(4);
-							string doctor = reader.GetString(5);
+        public bool DeleteVisit(Visit visit)
+        {
 
-							Visit visit = new Visit();
-							visit.Id = id;
-							visit.userEmail = userEmail;
-							visit.DoctorFio = doctor;
-							visit.PatientFio = patient;
-							visit.Date = date;
-							visit.Speciality = spec;
+            var token = tokenManager.FindOrAddToken();
+            if (tokenManager.IsTockenPaymentValid(token, Functions.Delete))
+            {
+                var dao = VisitDao.instanceOf();
+                dao.DeleteVisit(visit);
 
-							visits.Add(visit);
-						}
-					}
-				}
-				return visits;
-			}
-			catch(Exception ex)
-			{
-				return new List<Visit>();
-			}
-			
-		}
+                return true;
+            }
 
-		public bool createVisit(Visit visit)
-		{
-			getOrCreateToken();
+            throw new TokenNotFoundException("Payment or token not found. Operation DeleteVisits in Polyclinic Service");
+        }
 
-			string connStr = getConnectionString();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-			conn.Open();
-			string sql = "INSERT INTO Visits(user_fio,date,specialization,user_email,doctor_fio) VALUES('"+visit.PatientFio
-					+"','" + visit.Date.ToString("yyyy-M-dd") + "','"+visit.Speciality+"','" +
-				visit.userEmail + "','"+visit.DoctorFio+"')";
-			MySqlCommand command = new MySqlCommand(sql, conn);
-			
-				command.ExecuteNonQuery();
-			}
-			catch(Exception ex)
-			{
-				return false;
-			}
-			return true;
-		}
+        public bool UpdateVisit(Visit visit)
+        {
+            var token = tokenManager.FindOrAddToken();
+            if (tokenManager.IsTockenPaymentValid(token, Functions.Update))
+            {
+                var dao = VisitDao.instanceOf();
+                dao.UpdateVisit(visit);
 
-		public bool deleteVisit(Visit visit)
-		{
-			getOrCreateToken();
-			string connStr = getConnectionString();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "DELETE FROM Visits where id = "+visit.Id+"";
-				MySqlCommand command = new MySqlCommand(sql, conn);
+                return true;
+            }
 
-				command.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
-			return true;
-		}
+            throw new TokenNotFoundException("Payment or token not found. Operation UpdateVisits in Polyclinic Service");
+        }
 
-		public bool updateVisit(Visit visit)
-		{
-			getOrCreateToken();
-			string connStr = getConnectionString();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "UPDATE Visits SET doctor_fio='"+visit.DoctorFio+ "', user_fio='" + visit.PatientFio 
-					+ "',date='" + visit.Date.ToString("yyyy-M-dd") + "',speciality='" + visit.Speciality +"', user_email = '"+visit.userEmail
-					+ "' where id = " + visit.Id;
-				MySqlCommand command = new MySqlCommand(sql, conn);
+        List<Token> IPolyclinicService.getTokenPayments()
+        {
+            var token = tokenManager.FindOrAddToken();
 
-				command.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
-			return true;
-		}
+            return tokenManager.GetTokensPayment(token);
+        }
 
-		public List<Token> getUserTokens()
-		{
-			 
-			string connStr = "server=localhost;user=root;database=polyclinic;password=haq611kl;";
+        void IPolyclinicService.PayToken(TokenPaymentDto tokenDto)
+        {
+            var token = tokenManager.FindOrAddToken();
 
-			List<Token> tokens = new List<Token>();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "SELECT * FROM tokens WHERE user_email = '" + getUserEmail() + "'";
-				MySqlCommand command = new MySqlCommand(sql, conn);
+            tokenManager.PayToken(token, tokenDto);
+        }
 
-				using (DbDataReader reader = command.ExecuteReader())
-				{
-					if (reader.HasRows)
-					{
+        bool IPolyclinicService.IsTokenExists(Functions functions)
+        {
+            var token = tokenManager.FindOrAddToken();
 
-						while (reader.Read())
-						{
-							int id = reader.GetInt32(0);
-							string data = reader.GetString(1);
-							string func = reader.GetString(2);
-							DateTime date1 = reader.GetDateTime(3);
-							DateTime date2 = reader.GetDateTime(4);
-							string userEmail = reader.GetString(5);
+            return tokenManager.IsTockenPaymentValid(token, functions);
+        }
+    }
+
+    class VisitDao
+    {
+        private static VisitDao instance = null;
+        private MySqlConnection connection;
+        private String visit_table = "Visits";
+        private String visit_patient_fio_table = "user_fio";
+        private String visit_specializtion_table = "specialization";
+        private String visit_doctor_fio_table = "doctor_fio";
+        private String visit_date_table = "doctor_fio";
+        private String visit_id_table = "id";
 
 
-							Token token = new Token();
-							token.Id = id;
-							token.data = data;
-							//token.function = func;
-							token.Date1 = date1;
-							token.Date2 = date2;
-							token.userEmail = userEmail;
+        public static VisitDao instanceOf()
+        {
+            if (instance == null)
+            {
+                instance = new VisitDao();
+            }
 
-							tokens.Add(token);
-						}
-					}
-				}
-				return tokens;
-			}
-			catch (Exception ex)
-			{
-				return null;
-			}
-		}
-		
-		public bool addToken(Token token)
-		{
-			
-			string connStr = getConnectionString();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "INSERT INTO tokens(data, service, user_email) VALUES('" + token.data + "','" + getServiceName() + "', '"+
-					getUserEmail() +"')";
-				MySqlCommand command = new MySqlCommand(sql, conn);
+            return instance;
+        }
 
-				command.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
-			return true;
-		}
+        private VisitDao()
+        {
+            connection = new MySqlConnection(getConnectionString());
+        }
 
-		private Token findActualToken(string function)
-		{
-			/*DateTime curDate = DateTime.Now;
-			List<Token> tokens = getAllTokens(user.userEmail);
-			foreach(Token token in tokens)
-			{
-				if(token.Date1.CompareTo(curDate) <=0  && token.Date2.CompareTo(curDate) >= 0 && token.function.Equals(function))
-				{
-					return token;
-				}
-			}*/
-			return null;
-		}
+        public List<Visit> GetVisit()
+        {
 
-		private List<Token> getAllTokens(string email)
-		{
-			string connStr = getConnectionString();
+            List<Visit> visits = new List<Visit>();
 
-			List<Token> tokens = new List<Token>();
-			try
-			{
-				MySqlConnection conn = new MySqlConnection(connStr);
-				conn.Open();
-				string sql = "SELECT * FROM tokens WHERE user_email = '" + email + "'";
-				MySqlCommand command = new MySqlCommand(sql, conn);
+            connection.Open();
 
-				using (DbDataReader reader = command.ExecuteReader())
-				{
-					if (reader.HasRows)
-					{
+            string sql = "SELECT * FROM " + visit_table + ";";
 
-						while (reader.Read())
-						{
-							int id = reader.GetInt32(0);
-							string data = reader.GetString(1);
-							string func = reader.GetString(2);
-							DateTime date1 = reader.GetDateTime(3);
-							DateTime date2 = reader.GetDateTime(4);
-							string userEmail = reader.GetString(5);
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            using (DbDataReader reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+
+                    while (reader.Read())
+                    {
+
+                        int id = reader.GetInt32(0);
+                        string patient = reader.GetString(1);
+                        DateTime date = reader.GetDateTime(2);
+                        string spec = reader.GetString(3);
+                        string doctor = reader.GetString(5);
+
+                        Visit visit = new Visit(id, doctor, patient, date, spec);
+                        visits.Add(visit);
+                    }
+                }
+            }
+            connection.Close();
+
+            return visits;
+        }
 
 
-							Token token = new Token();
-							token.Id = id;
-							token.data = data;
-							//token.function = func;
-							token.Date1 = date1;
-							token.Date2 = date2;
-							token.userEmail = userEmail;
+        public void CreateVisit(Visit visit)
+        {
+            connection.Open();
 
-							tokens.Add(token);
-						}
-					}
-				}
-				return tokens;
-			}
-			catch (Exception ex)
-			{
-				return null;
-			}
-		}
+            string sql = $"INSERT INTO {visit_table}({visit_patient_fio_table},{visit_doctor_fio_table},{visit_date_table}, {visit_specializtion_table}) " +
+                $"VALUES( {visit.PatientFio},  {visit.DoctorFio}, {visit.Date.ToString("yyyy-M-dd")}, {visit.Date} )";
+            MySqlCommand command = new MySqlCommand(sql, connection);
 
-		bool IPolyclinicService.addTokenForUser(TokenPaymentDto tokenDto)
-		{
-			throw new NotImplementedException();
-		}
-	}
+            command.ExecuteNonQuery();
+            connection.Close();
 
-	
+        }
+
+        public void UpdateVisit(Visit visit)
+        {
+
+            connection.Open();
+            string sql = $"UPDATE {visit_table} SET {visit_doctor_fio_table}='" + visit.DoctorFio + $"', {visit_patient_fio_table}='" + visit.PatientFio
+                + $"',{visit_date_table}='" + visit.Date.ToString("yyyy-M-dd") + $"',{visit_specializtion_table}='" + visit.Speciality + $"' where {visit_id_table} = " + visit.Id;
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            command.ExecuteNonQuery();
+            connection.Close();
+
+        }
+
+        public void DeleteVisit(Visit visit)
+        {
+
+            connection.Open();
+            string sql = $"DELETE FROM {visit_table} where id = " + visit.Id + "";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            command.ExecuteNonQuery();
+            connection.Close();
+
+        }
+
+        private string getConnectionString()
+        {
+            return "server=104.154.108.3;user=root;database=ds;password=DS@BSU;";
+        }
+    }
+
+    interface ITokenManager
+    {
+        string GenerateToken();
+
+        String FindOrAddToken();
+
+        List<Token> GetTokensPayment(String token);
+
+        void PayToken(string token, TokenPaymentDto dto);
+
+        bool IsTockenPaymentValid(String token, Functions function);
+
+        String MyServiceName();
+        String MyServiceUser();
+    }
+    class TokenManager : ITokenManager
+    {
+
+        private MySqlConnection connection;
+
+        private String serviceName;
+        private String serviceUser;
+
+        private String token_table = "Tokens";
+        private String token_line_column = "line";
+        private String token_server_name_column = "server_name";
+        private String token_user_name_column = "server_user_name";
+
+
+        private String token_payment_table = "Token_payment";
+        private String token_payment_token_column = "token";
+        private String token_payment_function_column = "function";
+        private String token_payment_day1_column = "day1";
+        private String token_payment_day2_column = "day2";
+
+        private string getConnectionString()
+        {
+            return "server=104.154.108.3;user=root;database=ds;password=DS@BSU;";
+        }
+
+        public String MyServiceName()
+        {
+            return serviceName;
+        }
+
+        public String MyServiceUser()
+        {
+            return serviceUser;
+        }
+
+        public TokenManager(String serviceName, String serviceUser)
+        {
+            this.serviceName = serviceName;
+            this.serviceUser = serviceUser;
+            connection = new MySqlConnection(getConnectionString());
+        }
+
+
+        public string GenerateToken()
+        {
+            StringBuilder sb = new StringBuilder();
+            Random random = new Random();
+            for (int i = 0; i < 256; i++)
+            {
+                sb.Append(random.Next());
+            }
+            return sb.ToString();
+        }
+
+        public string FindOrAddToken()
+        {
+            string ans= null;
+            connection.Open();
+            string sql = $"SELECT * FROM {token_table} WHERE {token_server_name_column} = '" + MyServiceName() + "'";
+
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            using (DbDataReader reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    ans = reader.GetString(1);
+                }
+                else
+                {
+                    ans = GenerateToken();
+
+                    sql = $"INSERT INTO {token_table}({token_line_column}, {token_server_name_column}, {token_user_name_column}) " +
+                        $"VALUES( '{ans}','{MyServiceName()}', '{MyServiceUser()}')";
+
+                    command = new MySqlCommand(sql, connection);
+
+                    command.ExecuteNonQuery();
+
+                }
+
+            }
+            connection.Close();
+
+            return ans;
+        }
+
+        public List<Token> GetTokensPayment(string token)
+        {
+            List<Token> tokens = new List<Token>();
+
+            connection.Open();
+            string sql = $"SELECT * FROM {token_payment_table} WHERE {token_payment_token_column} = '" + token + "'";
+
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            using (DbDataReader reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+
+                    while (reader.Read())
+                    {
+
+                        int id = reader.GetInt32(0);
+                        string data = reader.GetString(1);
+                        string func = reader.GetString(2);
+                        DateTime date1 = reader.GetDateTime(3);
+                        DateTime date2 = reader.GetDateTime(4);
+
+                        Token t = new Token(id, data, mapWithFunction(func), date1, date2);
+
+                        tokens.Add(t);
+                    }
+                }
+            }
+            connection.Close();
+            return tokens;
+
+        }
+
+        public void PayToken(string token, TokenPaymentDto dto)
+        {
+
+            connection.Open();
+
+            string sql = $"INSERT INTO {token_payment_table}({token_payment_token_column}, {token_payment_function_column}, {token_payment_day1_column}, {token_payment_day2_column}) " +
+                $"VALUES( '{token}','{dto.data}', '{dto.Date1}', '{dto.Date2}')";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+
+        }
+
+        public bool IsTockenPaymentValid(String token, Functions function)
+        {
+            var tokens = GetTokensPayment(token);
+
+            tokens = tokens.FindAll(e => e.Day1 < DateTime.Now && e.Day2 > DateTime.Now && e.Function == function);
+
+            if (tokens.Count == 0)
+            {
+                return false;
+            }
+            return true;
+            
+        }
+
+        private Functions mapWithFunction(String func)
+        {
+            switch (func)
+            {
+                case "Create": return Functions.Create;
+                case "Update": return Functions.Update;
+                case "Delete": return Functions.Delete;
+                case "Get": return Functions.Get;
+            }
+            return Functions.Undefined;
+        }
+    }
+
 }
