@@ -1,0 +1,39 @@
+﻿@{
+
+    ViewData["Title"] = "Visits";
+
+}
+
+
+<div>
+    <h1 align="center">Список талончиков</h1>
+    <table border="1" align="center" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+
+            <th><p>Имя доктора</p></th>
+            <th><p>Имя пациента</p></th>
+
+            <th><p>День</p></th>
+            <th><p>Специальность</p></th>
+            <th><p>Обновить</p></th>
+            <th><p>Удалить</p></th>
+
+        </tr>
+
+        @foreach (var p in ViewBag.visits)
+        {
+            <tr>
+
+                <th><p>@p.DoctorFio</p></th>
+                <th><p>@p.PatientFio</p></th>
+
+                <th><p>@p.Date.ToString("yyyy-MM-dd:hh-mm")</p></th>
+                <th><p>@p.Speciality</p></th>
+
+                <th><p><a href="/Home/Update/@p.Id">Обновить</a></p></th>
+                <th><p><a href="/Home/Delete/@p.Id">Удалить</a></p></th>
+            </tr>
+        }
+
+    </table>
+</div>
