@@ -106,7 +106,7 @@ namespace PolyclinicService
         private String visit_patient_fio_table = "user_fio";
         private String visit_specializtion_table = "specialization";
         private String visit_doctor_fio_table = "doctor_fio";
-        private String visit_date_table = "doctor_fio";
+        private String visit_date_table = "date_visit";
         private String visit_id_table = "id";
 
 
@@ -148,7 +148,7 @@ namespace PolyclinicService
                         string patient = reader.GetString(1);
                         DateTime date = reader.GetDateTime(2);
                         string spec = reader.GetString(3);
-                        string doctor = reader.GetString(5);
+                        string doctor = reader.GetString(4);
 
                         Visit visit = new Visit(id, doctor, patient, date, spec);
                         visits.Add(visit);
@@ -165,8 +165,8 @@ namespace PolyclinicService
         {
             connection.Open();
 
-            string sql = $"INSERT INTO {visit_table}({visit_patient_fio_table},{visit_doctor_fio_table},{visit_date_table}, {visit_specializtion_table}) " +
-                $"VALUES( {visit.PatientFio},  {visit.DoctorFio}, {visit.Date.ToString("yyyy-M-dd")}, {visit.Date} )";
+           string sql = $"INSERT INTO {visit_table}({visit_patient_fio_table},{visit_date_table},{visit_specializtion_table},{visit_doctor_fio_table}) " +
+                $"VALUES( '{visit.PatientFio}','{visit.Date.ToString("yyyy-M-dd")}', '{visit.Speciality}', '{visit.DoctorFio}' )";
             MySqlCommand command = new MySqlCommand(sql, connection);
 
             command.ExecuteNonQuery();
