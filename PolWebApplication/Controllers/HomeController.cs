@@ -175,7 +175,7 @@ namespace PolWebApplication.Controllers
             }
 
 
-            return Index();
+            return Visits();
         }
         #endregion
 

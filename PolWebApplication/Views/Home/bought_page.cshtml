@@ -1,6 +1,4 @@
-﻿@model TokenParseModel
-
-@{
+﻿@{
     ViewData["Title"] = "Bought page";
 }
 
@@ -36,8 +34,8 @@
             <tr>
 
                 <th><p>@p.Function</p></th>
-                <th><p>@p.Day1.ToString("yyyy-MM-dd:hh-mm")</p></th>
-                <th><p>@p.Day2.ToString("yyyy-MM-dd:hh-mm")</p></th>
+                <th><p>@p.Day1.ToString("dd.MM.yyyy HH:mm")</p></th>
+                <th><p>@p.Day2.ToString("dd.MM.yyyy HH:mm")</p></th>
             </tr>
         }
 

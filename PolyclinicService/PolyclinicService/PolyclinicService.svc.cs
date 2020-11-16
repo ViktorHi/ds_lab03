@@ -165,8 +165,10 @@ namespace PolyclinicService
         {
             connection.Open();
 
+            var t = visit.Date.ToString("yyyy-M-dd HH:mm:ss");
+
            string sql = $"INSERT INTO {visit_table}({visit_patient_fio_table},{visit_date_table},{visit_specializtion_table},{visit_doctor_fio_table}) " +
-                $"VALUES( '{visit.PatientFio}','{visit.Date.ToString("yyyy-M-dd")}', '{visit.Speciality}', '{visit.DoctorFio}' )";
+                $"VALUES( '{visit.PatientFio}','{visit.Date.ToString("yyyy-M-dd HH:mm:ss")}', '{visit.Speciality}', '{visit.DoctorFio}' )";
             MySqlCommand command = new MySqlCommand(sql, connection);
 
             command.ExecuteNonQuery();
@@ -179,7 +181,7 @@ namespace PolyclinicService
 
             connection.Open();
             string sql = $"UPDATE {visit_table} SET {visit_doctor_fio_table}='" + visit.DoctorFio + $"', {visit_patient_fio_table}='" + visit.PatientFio
-                + $"',{visit_date_table}='" + visit.Date.ToString("yyyy-M-dd") + $"',{visit_specializtion_table}='" + visit.Speciality + $"' where {visit_id_table} = " + visit.Id;
+                + $"',{visit_date_table}='" + visit.Date.ToString("yyyy-M-dd HH:mm:ss") + $"',{visit_specializtion_table}='" + visit.Speciality + $"' where {visit_id_table} = " + visit.Id;
             MySqlCommand command = new MySqlCommand(sql, connection);
 
             command.ExecuteNonQuery();
@@ -204,7 +206,6 @@ namespace PolyclinicService
             return "server=104.154.108.3;user=root;database=ds;password=DS@BSU;";
         }
     }
-
     interface ITokenManager
     {
         string GenerateToken();
@@ -269,7 +270,7 @@ namespace PolyclinicService
             Random random = new Random();
             for (int i = 0; i < 256; i++)
             {
-                sb.Append(random.Next());
+                sb.Append(random.Next(10));
             }
             return sb.ToString();
         }
@@ -291,20 +292,20 @@ namespace PolyclinicService
 						ans = reader.GetString(1);
 					}
                 }
-                else
-                {
-                    ans = GenerateToken();
-
-                    sql = $"INSERT INTO {token_table}({token_line_column}, {token_server_name_column}, {token_user_name_column}) " +
-                        $"VALUES( '{ans}','{MyServiceName()}', '{MyServiceUser()}')";
-
-                    command = new MySqlCommand(sql, connection);
-
-                    command.ExecuteNonQuery();
-
-                }
-
             }
+
+            if(ans == null)
+            {
+                ans = GenerateToken();
+
+                sql = $"INSERT INTO {token_table}({token_line_column}, {token_server_name_column}, {token_user_name_column}) " +
+                    $"VALUES( '{ans}','{MyServiceName()}', '{MyServiceUser()}')";
+
+                command = new MySqlCommand(sql, connection);
+
+                command.ExecuteNonQuery();
+            }
+
             connection.Close();
 
             return ans;
@@ -350,7 +351,7 @@ namespace PolyclinicService
             connection.Open();
 
             string sql = $"INSERT INTO {token_payment_table}({token_payment_token_column}, {token_payment_function_column}, {token_payment_day1_column}, {token_payment_day2_column}) " +
-                $"VALUES( '{token}','{dto.data}', '{dto.Date1}', '{dto.Date2}')";
+                $"VALUES( '{token}','{dto.data}', '{dto.Date1.ToString("yyyy-M-dd HH:mm:ss")}', '{dto.Date2.ToString("yyyy-M-dd HH:mm:ss")}')";
             MySqlCommand command = new MySqlCommand(sql, connection);
 
             command.ExecuteNonQuery();
