@@ -1,0 +1,85 @@
+body {
+    background-image: url(/background.jpg);
+    background-position: 50% 0%;
+    background-repeat: repeat-y;
+    background-size: 100%;
+    text-align: center;
+    /*min-width: 1160px;*/
+}
+
+
+.navigation {
+    overflow: hidden;
+    background-color: #333;
+}
+
+    .navigation a {
+        float: left;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+        .navigation a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navigation a:active {
+            background-color: #c5c5c5;
+            color: white;
+        }
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main {
+    flex-grow: 3;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+.content {
+    margin: 20px;
+}
+
+    .content h1 {
+        text-align: center;
+        font: 3em sans-serif;
+    }
+
+    .content img {
+        text-align: right;
+        width: 90%;
+    }
+
+a.button {
+    display: inline-block;
+    color: rgb(0, 0, 0);
+    font-weight: 700;
+    text-decoration: none;
+    user-select: none;
+    margin-top: 2em;
+    padding: .5em 2em;
+    outline: none;
+    border: 2px solid;
+    border-radius: 1px;
+    transition: 0.2s;
+    text-align: center;
+}
+
+    a.button:hover {
+        background: rgba(117, 117, 117, 0.534);
+    }
+
+    a.button:active {
+        background: rgb(138, 138, 138);
+    }

@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "Create page";
+
+}
+
+<div class="content">
+
+    <h1>Модификация записи</h1>
+    <img src="~/wwwroot/policlinic.jpg">
+
+    <form action="/Home/AppllyUpdate" method="post">
+
+        <table>
+
+            <tr>
+                <td>
+                    <p>ID Визита</p>
+                </td>
+                <td>
+                    <input type="number" hidden readonly name="Id" value="@ViewBag.visit.Id" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <p>ФИО Врача</p>
+                </td>
+                <td>
+                    <input type="text" name="doctor_fio" value="@ViewBag.visit.DoctorFio" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <p>ФИО Пациента</p>
+                </td>
+                <td>
+                    <input type="text" name="patient_fio" value="@ViewBag.visit.PatientFio" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <p>Время приема</p>
+                </td>
+                <td>
+                    <input type="datetime-local" name="day_time" value="@ViewBag.visit.Date.ToString("yyyy-MM-dd --:--")" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <p>Срециальность врача</p>
+                </td>
+                <td>
+                    <input type="text" name="speciality" value="@ViewBag.visit.Speciality" />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td><input type="submit" value="Показать" /> </td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+
+
+
+</div>

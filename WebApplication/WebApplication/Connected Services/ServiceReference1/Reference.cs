@@ -127,7 +127,18 @@ namespace ServiceReference1
         private int IdField;
         
         private string LineField;
-        
+
+        public Token(int id, string data, Functions function, DateTime date1, DateTime date2)
+        {
+            Id = id;
+            Line = data;
+            Function = function;
+            Day1 = date1;
+            Day2 = date2;
+        }
+
+
+
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.DateTime Day1
         {
@@ -227,12 +238,11 @@ namespace ServiceReference1
         
         private ServiceReference1.Functions dataField;
 
-
-        public TokenPaymentDto(Functions get, DateTime day1, DateTime day2)
+        public TokenPaymentDto(Functions data, DateTime date1, DateTime date2)
         {
-            this.dataField = get;
-            this.Date1Field = day1;
-            this.Date2Field = day2;
+            this.data = data;
+            Date1 = date1;
+            Date2 = date2;
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
@@ -281,22 +291,43 @@ namespace ServiceReference1
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/GetVisits", ReplyAction="http://tempuri.org/IPolyclinicService/GetVisitsResponse")]
+        ServiceReference1.Visit[] GetVisits();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/GetVisits", ReplyAction="http://tempuri.org/IPolyclinicService/GetVisitsResponse")]
         System.Threading.Tasks.Task<ServiceReference1.Visit[]> GetVisitsAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/CreateVisit", ReplyAction="http://tempuri.org/IPolyclinicService/CreateVisitResponse")]
+        bool CreateVisit(ServiceReference1.Visit visit);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/CreateVisit", ReplyAction="http://tempuri.org/IPolyclinicService/CreateVisitResponse")]
         System.Threading.Tasks.Task<bool> CreateVisitAsync(ServiceReference1.Visit visit);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/UpdateVisit", ReplyAction="http://tempuri.org/IPolyclinicService/UpdateVisitResponse")]
+        bool UpdateVisit(ServiceReference1.Visit visit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/UpdateVisit", ReplyAction="http://tempuri.org/IPolyclinicService/UpdateVisitResponse")]
         System.Threading.Tasks.Task<bool> UpdateVisitAsync(ServiceReference1.Visit visit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/DeleteVisit", ReplyAction="http://tempuri.org/IPolyclinicService/DeleteVisitResponse")]
+        bool DeleteVisit(ServiceReference1.Visit visit);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/DeleteVisit", ReplyAction="http://tempuri.org/IPolyclinicService/DeleteVisitResponse")]
         System.Threading.Tasks.Task<bool> DeleteVisitAsync(ServiceReference1.Visit visit);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/getTokenPayments", ReplyAction="http://tempuri.org/IPolyclinicService/getTokenPaymentsResponse")]
+        ServiceReference1.Token[] getTokenPayments();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/getTokenPayments", ReplyAction="http://tempuri.org/IPolyclinicService/getTokenPaymentsResponse")]
         System.Threading.Tasks.Task<ServiceReference1.Token[]> getTokenPaymentsAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/PayToken", ReplyAction="http://tempuri.org/IPolyclinicService/PayTokenResponse")]
+        void PayToken(ServiceReference1.TokenPaymentDto tokenDto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/PayToken", ReplyAction="http://tempuri.org/IPolyclinicService/PayTokenResponse")]
         System.Threading.Tasks.Task PayTokenAsync(ServiceReference1.TokenPaymentDto tokenDto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/IsTokenExists", ReplyAction="http://tempuri.org/IPolyclinicService/IsTokenExistsResponse")]
+        bool IsTokenExists(ServiceReference1.Functions functions);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IPolyclinicService/IsTokenExists", ReplyAction="http://tempuri.org/IPolyclinicService/IsTokenExistsResponse")]
         System.Threading.Tasks.Task<bool> IsTokenExistsAsync(ServiceReference1.Functions functions);
@@ -321,9 +352,19 @@ namespace ServiceReference1
         {
         }
 
+        public ServiceReference1.Visit[] GetVisits()
+        {
+            return base.Channel.GetVisits();
+        }
+        
         public System.Threading.Tasks.Task<ServiceReference1.Visit[]> GetVisitsAsync()
         {
             return base.Channel.GetVisitsAsync();
+        }
+        
+        public bool CreateVisit(ServiceReference1.Visit visit)
+        {
+            return base.Channel.CreateVisit(visit);
         }
         
         public System.Threading.Tasks.Task<bool> CreateVisitAsync(ServiceReference1.Visit visit)
@@ -331,9 +372,19 @@ namespace ServiceReference1
             return base.Channel.CreateVisitAsync(visit);
         }
         
+        public bool UpdateVisit(ServiceReference1.Visit visit)
+        {
+            return base.Channel.UpdateVisit(visit);
+        }
+        
         public System.Threading.Tasks.Task<bool> UpdateVisitAsync(ServiceReference1.Visit visit)
         {
             return base.Channel.UpdateVisitAsync(visit);
+        }
+        
+        public bool DeleteVisit(ServiceReference1.Visit visit)
+        {
+            return base.Channel.DeleteVisit(visit);
         }
         
         public System.Threading.Tasks.Task<bool> DeleteVisitAsync(ServiceReference1.Visit visit)
@@ -341,14 +392,29 @@ namespace ServiceReference1
             return base.Channel.DeleteVisitAsync(visit);
         }
         
+        public ServiceReference1.Token[] getTokenPayments()
+        {
+            return base.Channel.getTokenPayments();
+        }
+        
         public System.Threading.Tasks.Task<ServiceReference1.Token[]> getTokenPaymentsAsync()
         {
             return base.Channel.getTokenPaymentsAsync();
         }
         
+        public void PayToken(ServiceReference1.TokenPaymentDto tokenDto)
+        {
+            base.Channel.PayToken(tokenDto);
+        }
+        
         public System.Threading.Tasks.Task PayTokenAsync(ServiceReference1.TokenPaymentDto tokenDto)
         {
             return base.Channel.PayTokenAsync(tokenDto);
+        }
+        
+        public bool IsTokenExists(ServiceReference1.Functions functions)
+        {
+            return base.Channel.IsTokenExists(functions);
         }
         
         public System.Threading.Tasks.Task<bool> IsTokenExistsAsync(ServiceReference1.Functions functions)

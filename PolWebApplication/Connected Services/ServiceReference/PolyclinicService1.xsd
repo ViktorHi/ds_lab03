@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/PolyclinicService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/PolyclinicService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfVisit">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Visit" nillable="true" type="tns:Visit" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVisit" nillable="true" type="tns:ArrayOfVisit" />
+  <xs:complexType name="Visit">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="DoctorFio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="PatientFio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Speciality" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Visit" nillable="true" type="tns:Visit" />
+  <xs:complexType name="ArrayOfToken">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Token" nillable="true" type="tns:Token" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfToken" nillable="true" type="tns:ArrayOfToken" />
+  <xs:complexType name="Token">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Day1" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Day2" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Function" type="tns:Functions" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Line" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Token" nillable="true" type="tns:Token" />
+  <xs:simpleType name="Functions">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Create" />
+      <xs:enumeration value="Update" />
+      <xs:enumeration value="Delete" />
+      <xs:enumeration value="Get" />
+      <xs:enumeration value="Undefined" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Functions" nillable="true" type="tns:Functions" />
+  <xs:complexType name="TokenPaymentDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Date1" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Date2" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="data" type="tns:Functions" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TokenPaymentDto" nillable="true" type="tns:TokenPaymentDto" />
+</xs:schema>

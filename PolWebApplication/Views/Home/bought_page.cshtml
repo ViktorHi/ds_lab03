@@ -1,0 +1,46 @@
+﻿@model TokenParseModel
+
+@{
+    ViewData["Title"] = "Bought page";
+}
+
+<div class="content">
+    <h1>Выберите необходимые вам услуги</h1>
+    <img src="~/wwwroot/thinking_person.jpg">
+
+    <form class="checkbox" method="post" action="/Home/BoughtToken">
+        <p><b>Выберите одну или несколько и подтвердите выбор:</b></p>
+        <p>
+
+
+            <input id="get" type="checkbox" name="get" checked>Просмотр<Br>
+            <input id="create" type="checkbox" name="create" checked>Создание<Br>
+            <input id="delete" type="checkbox" name="delete">Удаление<Br>
+            <input id="edit" type="checkbox" name="edit">Редактирование<Br>
+            <input id="dat1" type="datetime-local" name="day1" />
+            <input id="day2" type="datetime-local" name="day2" />
+        <p><input type="submit" value="Отправить"></p>
+    </form>
+
+    <h1 align="center">Существующие оплаты</h1>
+    <table border="1" align="center" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+
+            <th><p>Тип оплаты</p></th>
+            <th><p>День начала</p></th>
+            <th><p>День конца</p></th>
+        </tr>
+
+        @foreach (var p in ViewBag.tokens)
+        {
+            <tr>
+
+                <th><p>@p.Function</p></th>
+                <th><p>@p.Day1.ToString("yyyy-MM-dd:hh-mm")</p></th>
+                <th><p>@p.Day2.ToString("yyyy-MM-dd:hh-mm")</p></th>
+            </tr>
+        }
+
+    </table>
+
+</div>

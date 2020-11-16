@@ -1,6 +1,5 @@
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\appsettings.json
-D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\WebApplication.exe
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\WebApplication.deps.json
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\WebApplication.runtimeconfig.json
@@ -51,3 +50,7 @@ D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\n
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\win7\lib\netstandard2.0\System.Private.ServiceModel.dll
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.csproj.CoreCompileInputs.cache
 D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.MvcApplicationPartsAssemblyInfo.cache
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Web.config
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\scopedcss\bundle\WebApplication.styles.css
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Web.Debug.config
+D:\Studies\3 course\ds02\lab03\project\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Web.Release.config

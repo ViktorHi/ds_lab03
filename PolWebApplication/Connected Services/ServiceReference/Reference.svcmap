@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="43f23256-2673-4e99-8f62-ed4855a6cd9e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:58321/PolyclinicService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PolyclinicService.disco" MetadataType="Disco" ID="06dea839-bcbb-4a23-920f-17cd20cda5e8" SourceId="1" SourceUrl="http://localhost:58321/PolyclinicService.svc?disco" />
+    <MetadataFile FileName="PolyclinicService.xsd" MetadataType="Schema" ID="cc6473da-ca30-4d5a-9150-a703ecd15975" SourceId="1" SourceUrl="http://localhost:58321/PolyclinicService.svc?xsd=xsd0" />
+    <MetadataFile FileName="PolyclinicService.wsdl" MetadataType="Wsdl" ID="a6644f5e-2d74-47f8-92f5-73c88950da05" SourceId="1" SourceUrl="http://localhost:58321/PolyclinicService.svc?wsdl" />
+    <MetadataFile FileName="PolyclinicService1.xsd" MetadataType="Schema" ID="2996bd4b-e3e5-4cb8-b30f-28d2426ec46e" SourceId="1" SourceUrl="http://localhost:58321/PolyclinicService.svc?xsd=xsd2" />
+    <MetadataFile FileName="PolyclinicService2.xsd" MetadataType="Schema" ID="b3d5aaf2-6d97-4663-ab44-aeda70465e00" SourceId="1" SourceUrl="http://localhost:58321/PolyclinicService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

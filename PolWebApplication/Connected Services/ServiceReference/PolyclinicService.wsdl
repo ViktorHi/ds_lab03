@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="PolyclinicService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:58321/PolyclinicService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:58321/PolyclinicService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:58321/PolyclinicService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/PolyclinicService" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPolyclinicService_GetVisits_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVisits" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_GetVisits_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVisitsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_CreateVisit_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateVisit" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_CreateVisit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateVisitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_UpdateVisit_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateVisit" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_UpdateVisit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateVisitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_DeleteVisit_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteVisit" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_DeleteVisit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteVisitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_getTokenPayments_InputMessage">
+    <wsdl:part name="parameters" element="tns:getTokenPayments" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_getTokenPayments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getTokenPaymentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_PayToken_InputMessage">
+    <wsdl:part name="parameters" element="tns:PayToken" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_PayToken_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PayTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_IsTokenExists_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsTokenExists" />
+  </wsdl:message>
+  <wsdl:message name="IPolyclinicService_IsTokenExists_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsTokenExistsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPolyclinicService">
+    <wsdl:operation name="GetVisits">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/GetVisits" message="tns:IPolyclinicService_GetVisits_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/GetVisitsResponse" message="tns:IPolyclinicService_GetVisits_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateVisit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/CreateVisit" message="tns:IPolyclinicService_CreateVisit_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/CreateVisitResponse" message="tns:IPolyclinicService_CreateVisit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateVisit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/UpdateVisit" message="tns:IPolyclinicService_UpdateVisit_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/UpdateVisitResponse" message="tns:IPolyclinicService_UpdateVisit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteVisit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/DeleteVisit" message="tns:IPolyclinicService_DeleteVisit_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/DeleteVisitResponse" message="tns:IPolyclinicService_DeleteVisit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getTokenPayments">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/getTokenPayments" message="tns:IPolyclinicService_getTokenPayments_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/getTokenPaymentsResponse" message="tns:IPolyclinicService_getTokenPayments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PayToken">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/PayToken" message="tns:IPolyclinicService_PayToken_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/PayTokenResponse" message="tns:IPolyclinicService_PayToken_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IsTokenExists">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolyclinicService/IsTokenExists" message="tns:IPolyclinicService_IsTokenExists_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolyclinicService/IsTokenExistsResponse" message="tns:IPolyclinicService_IsTokenExists_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:service name="PolyclinicService" />
+</wsdl:definitions>

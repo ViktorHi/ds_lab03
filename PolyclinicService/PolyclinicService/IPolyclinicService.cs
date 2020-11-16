@@ -120,8 +120,13 @@ namespace PolyclinicService
 		[DataMember]
 		public DateTime Date2 { get; set; }
 
-
-	}
+        public TokenPaymentDto(Functions data, DateTime date1, DateTime date2)
+        {
+            this.data = data;
+            Date1 = date1;
+            Date2 = date2;
+        }
+    }
 
 
 	public enum Functions
