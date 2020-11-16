@@ -286,7 +286,10 @@ namespace PolyclinicService
             {
                 if (reader.HasRows)
                 {
-                    ans = reader.GetString(1);
+                  	if (reader.Read())
+					{
+						ans = reader.GetString(1);
+					}
                 }
                 else
                 {
