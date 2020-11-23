@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
@@ -24,78 +25,35 @@ namespace PolyclinicService
         public List<Visit> GetVisits()
         {
 
-            var token = tokenManager.FindOrAddToken();
-            if(tokenManager.IsTockenPaymentValid(token, Functions.Get))
-            {
-                var dao = VisitDao.instanceOf();
-                return dao.GetVisit();
-            }
-
-            throw new TokenNotFoundException("Payment or token not found. Operation GetVisits in Polyclinic Service");
+            tokenManager.FindOrAddToken(Functions.Get);
+            var dao = VisitDao.instanceOf();
+            return dao.GetVisit();
         }
 
         public bool CreateVisit(Visit visit)
         {
-            var token = tokenManager.FindOrAddToken();
-            if (tokenManager.IsTockenPaymentValid(token, Functions.Create))
-            {
-                var dao = VisitDao.instanceOf();
-                dao.CreateVisit(visit);
-                return true;
-            }
-
-            throw new TokenNotFoundException("Payment or token not found. Operation CreateVisits in Polyclinic Service");
+            tokenManager.FindOrAddToken(Functions.Create);
+            var dao = VisitDao.instanceOf();
+            dao.CreateVisit(visit);
+            return true;
         }
 
         public bool DeleteVisit(Visit visit)
         {
 
-            var token = tokenManager.FindOrAddToken();
-            if (tokenManager.IsTockenPaymentValid(token, Functions.Delete))
-            {
-                var dao = VisitDao.instanceOf();
-                dao.DeleteVisit(visit);
-
-                return true;
-            }
-
-            throw new TokenNotFoundException("Payment or token not found. Operation DeleteVisits in Polyclinic Service");
+            var token = tokenManager.FindOrAddToken(Functions.Delete);
+            var dao = VisitDao.instanceOf();
+            dao.DeleteVisit(visit);
+            return true;
         }
 
         public bool UpdateVisit(Visit visit)
         {
-            var token = tokenManager.FindOrAddToken();
-            if (tokenManager.IsTockenPaymentValid(token, Functions.Update))
-            {
-                var dao = VisitDao.instanceOf();
-                dao.UpdateVisit(visit);
-
-                return true;
-            }
-
-            throw new TokenNotFoundException("Payment or token not found. Operation UpdateVisits in Polyclinic Service");
-        }
-
-        List<Token> IPolyclinicService.getTokenPayments()
-        {
-            var token = tokenManager.FindOrAddToken();
-
-            return tokenManager.GetTokensPayment(token);
-        }
-
-        void IPolyclinicService.PayToken(TokenPaymentDto tokenDto)
-        {
-            var token = tokenManager.FindOrAddToken();
-
-            tokenManager.PayToken(token, tokenDto);
-        }
-
-        bool IPolyclinicService.IsTokenExists(Functions functions)
-        {
-            var token = tokenManager.FindOrAddToken();
-
-            return tokenManager.IsTockenPaymentValid(token, functions);
-        }
+            var token = tokenManager.FindOrAddToken(Functions.Update);
+            var dao = VisitDao.instanceOf();
+            dao.UpdateVisit(visit);
+            return true;
+        }  
     }
 
     class VisitDao
@@ -210,7 +168,7 @@ namespace PolyclinicService
     {
         string GenerateToken();
 
-        String FindOrAddToken();
+		System.Threading.Tasks.Task<string> FindOrAddToken(Functions functions);
 
         List<Token> GetTokensPayment(String token);
 
@@ -230,9 +188,13 @@ namespace PolyclinicService
         private String serviceUser;
 
         private String token_table = "Tokens";
-        private String token_line_column = "line";
+		private String method_table = "Methods";
+		private String method_service_name_column = "ServiceId";
+		private String method_method_name_column = "MethodName";
+		private String token_line_column = "line";
         private String token_server_name_column = "server_name";
-        private String token_user_name_column = "server_user_name";
+		private String token_method_id_column = "MethodId";
+		private String token_user_name_column = "server_user_name";
 
 
         private String token_payment_table = "Token_payment";
@@ -275,43 +237,62 @@ namespace PolyclinicService
             return sb.ToString();
         }
 
-        public string FindOrAddToken()
+		public async System.Threading.Tasks.Task<string> FindOrAddToken(Functions functions)
         {
-            string ans= null;
-            connection.Open();
-            string sql = $"SELECT * FROM {token_table} WHERE {token_server_name_column} = '" + MyServiceName() + "'";
+			string ans = null;
+			connection.Open();
+			string sql = $"SELECT * FROM {token_table} WHERE {token_method_id_column} = '" + getMethodId(functions, MyServiceName()) + "'";
 
-            MySqlCommand command = new MySqlCommand(sql, connection);
+			MySqlCommand command = new MySqlCommand(sql, connection);
 
-            using (DbDataReader reader = command.ExecuteReader())
-            {
-                if (reader.HasRows)
-                {
-                  	if (reader.Read())
+			using (DbDataReader reader = command.ExecuteReader())
+			{
+				if (!reader.HasRows)
+				{
+					if (reader.Read())
 					{
-						ans = reader.GetString(1);
+						ans = reader.GetString(0);
 					}
-                }
-            }
+				}
+				else
+				{
 
-            if(ans == null)
-            {
-                ans = GenerateToken();
+					HttpClient client = new HttpClient();
+					var registerRequest = new HttpRequestMessage(HttpMethod.Get,
+						"http://localhost:5000/Pay?service=" + MyServiceName() + "&method=" + functions.ToString() + "&token=" + GenerateToken());
 
-                sql = $"INSERT INTO {token_table}({token_line_column}, {token_server_name_column}, {token_user_name_column}) " +
-                    $"VALUES( '{ans}','{MyServiceName()}', '{MyServiceUser()}')";
+					await client.SendAsync(registerRequest);
+				}
 
-                command = new MySqlCommand(sql, connection);
+			}
+			connection.Close();
 
-                command.ExecuteNonQuery();
-            }
+			return ans;
+		}
 
-            connection.Close();
+		private int getMethodId(Functions functions, string name)
+		{
+			string sql = $"SELECT id FROM {method_table} WHERE {method_service_name_column} = '" + name + "' AND " + method_method_name_column + " = "
+				+ functions.ToString();
 
-            return ans;
-        }
+			MySqlCommand command = new MySqlCommand(sql, connection);
 
-        public List<Token> GetTokensPayment(string token)
+			int result = -1;
+			using (DbDataReader reader = command.ExecuteReader())
+			{
+				if (reader.HasRows)
+				{
+					if (reader.Read())
+					{
+						result = reader.GetInt32(0);
+					}
+				}
+			}
+			connection.Close();
+			return result;
+		}
+
+		public List<Token> GetTokensPayment(string token)
         {
             List<Token> tokens = new List<Token>();
 

@@ -24,15 +24,6 @@ namespace PolyclinicService
 
 		[OperationContract]
 		bool DeleteVisit(Visit visit);
-
-		[OperationContract]
-		List<Token> getTokenPayments();
-
-		[OperationContract]
-		void PayToken(TokenPaymentDto tokenDto);
-
-		[OperationContract]
-		bool IsTokenExists(Functions functions);
 	}
 
 	[DataContract]
