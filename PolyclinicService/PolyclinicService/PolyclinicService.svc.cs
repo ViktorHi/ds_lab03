@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Text.Json;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.CRUD;
 using Org.BouncyCastle.Crypto.Tls;
@@ -22,7 +23,14 @@ namespace PolyclinicService
 
         ITokenManager tokenManager = new TokenManager("PolyclinincService", "DefaultPolyclynicUser");
 
-        public List<Visit> GetVisits()
+		public bool IsTokenExists(Functions functions)
+		{
+			var token = tokenManager.FindToken(functions);
+
+			return token == null ? false:true;
+		}
+
+		public List<Visit> GetVisits()
         {
 
             tokenManager.FindOrAddToken(Functions.Get);
@@ -178,7 +186,8 @@ namespace PolyclinicService
 
         String MyServiceName();
         String MyServiceUser();
-    }
+		string FindToken(Functions functions);
+	}
     class TokenManager : ITokenManager
     {
 
@@ -208,7 +217,13 @@ namespace PolyclinicService
             return "server=104.154.108.3;user=root;database=ds;password=DS@BSU;";
         }
 
-        public String MyServiceName()
+		private class MethodIdNamePair
+		{
+			public bool Result { get; set; }
+			public string Message { get; set; }
+		}
+
+		public String MyServiceName()
         {
             return serviceName;
         }
@@ -234,20 +249,21 @@ namespace PolyclinicService
             {
                 sb.Append(random.Next(10));
             }
-            return sb.ToString();
+			return sb.ToString();
         }
 
 		public async System.Threading.Tasks.Task<string> FindOrAddToken(Functions functions)
         {
 			string ans = null;
-			connection.Open();
-			string sql = $"SELECT * FROM {token_table} WHERE {token_method_id_column} = '" + getMethodId(functions, MyServiceName()) + "'";
+			
+			string sql = $"SELECT * FROM {token_table} WHERE {token_method_id_column} = " + getMethodId(functions, MyServiceName()) + "";
 
+			connection.Open();
 			MySqlCommand command = new MySqlCommand(sql, connection);
 
 			using (DbDataReader reader = command.ExecuteReader())
 			{
-				if (!reader.HasRows)
+				if (reader.HasRows)
 				{
 					if (reader.Read())
 					{
@@ -258,10 +274,24 @@ namespace PolyclinicService
 				{
 
 					HttpClient client = new HttpClient();
-					var registerRequest = new HttpRequestMessage(HttpMethod.Get,
-						"http://localhost:5000/Pay?service=" + MyServiceName() + "&method=" + functions.ToString() + "&token=" + GenerateToken());
+					String url = "http://35.192.209.17:8282/Pay?service=" + MyServiceName() + "&method=" + functions.ToString()
+						+ "&token=" + GenerateToken();
+					var registerRequest = new HttpRequestMessage(HttpMethod.Get, url);
+						
 
-					await client.SendAsync(registerRequest);
+					var reply = await client.SendAsync(registerRequest);
+					string registerReplyContent = await reply.Content.ReadAsStringAsync();
+
+					var methodPairs = JsonSerializer.Deserialize<MethodIdNamePair[]>(registerReplyContent,
+						new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+					var pair = methodPairs.First();
+					bool result = pair.Result;
+					if (!result)
+					{
+						throw new PaymentException("Could not pay");
+					}
+
 				}
 
 			}
@@ -270,10 +300,13 @@ namespace PolyclinicService
 			return ans;
 		}
 
+	
+
 		private int getMethodId(Functions functions, string name)
 		{
-			string sql = $"SELECT id FROM {method_table} WHERE {method_service_name_column} = '" + name + "' AND " + method_method_name_column + " = "
-				+ functions.ToString();
+			connection.Open();
+			string sql = $"SELECT Id FROM {method_table} WHERE {method_service_name_column} = '" + name + "' AND " + method_method_name_column + " = '"
+				+ functions.ToString()+"'";
 
 			MySqlCommand command = new MySqlCommand(sql, connection);
 
@@ -366,6 +399,28 @@ namespace PolyclinicService
             }
             return Functions.Undefined;
         }
-    }
+
+		public string FindToken(Functions functions)
+		{
+			string ans = null;
+
+			string sql = $"SELECT * FROM {token_table} WHERE {token_method_id_column} = " + getMethodId(functions, MyServiceName()) + "";
+
+			connection.Open();
+			MySqlCommand command = new MySqlCommand(sql, connection);
+
+			using (DbDataReader reader = command.ExecuteReader())
+			{
+				if (reader.HasRows)
+				{
+					if (reader.Read())
+					{
+						ans = reader.GetString(0);
+					}
+				}
+			}
+			return ans;
+		}
+	}
 
 }

@@ -24,6 +24,9 @@ namespace PolyclinicService
 
 		[OperationContract]
 		bool DeleteVisit(Visit visit);
+
+		[OperationContract]
+		bool IsTokenExists(Functions functions);
 	}
 
 	[DataContract]
@@ -140,6 +143,14 @@ namespace PolyclinicService
 	public class TokenNotFoundException : Exception
 	{
 		public TokenNotFoundException(string message)
+		: base(message)
+		{
+		}
+	}
+
+	public class PaymentException : Exception
+	{
+		public PaymentException(string message)
 		: base(message)
 		{
 		}
